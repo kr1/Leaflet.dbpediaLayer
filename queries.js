@@ -1,14 +1,21 @@
 (function(exports){
-    exports.assemble_dbpedia_url = function(query){
-       return "http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=" + 
+    function assemble_dbpedia_url(query){
+       return "http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=" +
                    escape(query) + "&format=json";
     }
+    exports.assemble_dbpedia_url = assemble_dbpedia_url;
 
-    exports.assembles_position_based_query = function(positionSW, positionNE, options){
-        // options: 
-        // - language:string
-        // - include_cities: bool
-        // - type_url: SPARQL-URL-string (e.g. <http://queries for: 'rdf:type') 
+    exports.assembles_area_query = function(positionSW, positionNE, options){
+        // assembles a SPARQL query for resources in the specified area.
+        // options:
+        // - not_here: list(areas): areas to exclude in the query, format [obj, obj]: 
+        //             obj must have the following format:
+        //                {SW:{lat:NN.NN, lng:NN.NN,
+        //                 NE:{lat:NN.NN, lng: NN.NN}}
+        // - language: string, default: 'en'
+        // - include_cities: bool, default: false
+        //      NB: by default populated places (dbpedia-owl:PopulatedPlace) are excluded from the query
+        // - type_url: SPARQL-URL-string (e.g. <http://queries for: 'rdf:type')
         options = options || {};
         var lang = options.language || 'en';
         var type_query_head = options.type_url ? "" : " (GROUP_CONCAT(?type; separator=',') as ?types) ";
