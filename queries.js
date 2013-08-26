@@ -101,56 +101,6 @@
       return q
     }
 
-    function send_query(url, callback, options){
-        // options:
-        // - track_loading -> function, e.g. onUpdateProgress
-        options = options || {};
-        set_progress_value(2, "request sent...");
-        var ajaxSetup = {
-          dataType: "json",
-          url: url,
-          success: callback,
-        }
-        if (options.track_loading){
-          // ajaxSetup.progress = onUpdateProgress
-          ajaxSetup.progress = options.track_loading
-        }
-
-        var lastAjax = $.ajax(ajaxSetup);
-        if (options.track_loading){ // i.e. if the call is for content, not for count
-          exports.currentAjax = lastAjax;
-        }
-    }
-    exports.send_query = send_query;
-
-    function onUpdateProgress(e) { 
-      if (e.lengthComputable) { 
-        var percent_complete = (e.loaded/e.total) * 100; 
-      } else { 
-        var percent_complete = 0;
-      } 
-      //console.log(percent_complete)
-      set_progress_value(percent_complete);
-    } 
-
-    function set_progress_value(val, str){
-        var cont = $('#loading_progress');
-        var ele = cont.find('div');
-        if (str) {
-          $('#loading_message').show()
-        } else {
-          $('#loading_message').hide()
-        }
-        var new_width = String(val) + '%';
-        ele.css('width', new_width);
-        cont.show();
-    }
-
-    function stop_loading_animation(){
-      $('#loading_progress').hide()
-    }
-    queries.stop_loading_animation = stop_loading_animation;
-
     function display_query_in_monitor(q, url){
       $('#query_monitor_container').show();
       $('#query_monitor').html("<pre><code>" + q + "</code></pre><br/><a href=" + url.replace("sparql", "snorql") + ">run query</a>");
