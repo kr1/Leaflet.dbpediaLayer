@@ -34,9 +34,16 @@
         if (!options.include_cities && !options.type_url){
             q += "      MINUS {?res a <http://dbpedia.org/ontology/PopulatedPlace>}."
         }
-        q += "      FILTER (?lng > " + positionSW.lng + "  AND ?lng < " + positionNE.lng
-        q += "      AND ?lat > " + positionSW.lat + " AND ?lat < " + positionNE.lat
-        q += "      AND LANG(?label)='" + lang + "'"
+        q += "      FILTER ((?lng > " + positionSW.lng + "  AND ?lng < " + positionNE.lng
+        q += "      AND ?lat > " + positionSW.lat + " AND ?lat < " + positionNE.lat + ") AND "
+        if (options.not_here){
+            for (var idx = 0 ; idx < options.not_here.length ; idx++) {
+                var area = options.not_here[idx];
+                q += "      !(?lng > " + area.SW.lng + "  AND ?lng < " + area.NE.lng
+                q += "      AND ?lat > " + area.SW.lat + " AND ?lat < " + area.NE.lat + ") AND "
+            }
+        }
+        q += "      LANG(?label)='" + lang + "'"
         if (!options.type_url){
             q += "      AND LANG(?type)='" + lang + "')"
         }
