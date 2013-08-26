@@ -57,22 +57,20 @@
       q += "    ?page foaf:isPrimaryTopicOf ?wiki_page .\n";
       q += "    ?page rdfs:label ?label .\n";
       q += "    FILTER(lang(?label) = 'en')\n";
-      q += "} LIMIT 100";
+      q += "} " + (limit ? "LIMIT " + limit : "");
       return q
     }
 
-    function assemble_free_text_search_query(klass){
-      var free_text = $('#proto_free_text_input').val().trim().split(" ");
-      var what = $('#proto_free_search_field_select').val()
-      var q = "SELECT distinct(?page) ?label ?wiki_page " + (what == 'description' ? "?desc" : "") + " WHERE {\n"
+    function assemble_free_text_search_query(free_text, field){
+      var q = "SELECT distinct(?page) ?label ?wiki_page " + (field == 'description' ? "?desc" : "") + " WHERE {\n"
       var q_count = "SELECT count(distinct(?page)) as ?count WHERE {\n"
-      var conditions = _assemble_conditions(free_text, what, Sem.current_top_level && Sem.current_top_level.url)
+      var conditions = _assemble_conditions(free_text, field, Sem.current_top_level && Sem.current_top_level.url)
       q_count += conditions;
       q += conditions;
       q += "} ORDER BY ?page";
       q_count += "}";
-      var url = Sem.assemble_dbpedia_url(q);
-      var count_url = Sem.assemble_dbpedia_url(q_count);
+      var url = assemble_dbpedia_url(q);
+      var count_url = assemble_dbpedia_url(q_count);
       send_query(url, true);
       display_query_in_monitor(q, url);
       send_query(count_url);
@@ -83,21 +81,21 @@
 
     }
 
-    function _assemble_conditions(free_text, what, klass){
+    function _assemble_conditions(free_text, field, type){
       var join1 = free_text.join("' AND '");
       var join2 = free_text.join("");
       var q = "    ?page rdfs:label ?label .\n";
       q += "    ?page foaf:isPrimaryTopicOf ?wiki_page .\n";
-      if (klass){
-          q += "    ?page a <" + klass + ">  .";
+      if (type){
+          q += "    ?page a <" + type + ">  .";
       }
-      if (what == 'description'){
+      if (field == 'description'){
           q += "    ?page dbpedia-owl:abstract ?desc .";
           q += "    ?desc bif:contains \"'(" + join1 + ")' or '" + join2 + "'\"\n";
-          q += "    FILTER(lang(?label) = 'en' AND lang(?desc) = 'en' AND\n";  // take only english labels
+          q += "    FILTER(lang(?label)='en' AND lang(?desc)='en' AND\n";  // take only english labels
       } else {
           q += "    ?label bif:contains \"'(" + join1 + ")' or '" + join2 + "'\"\n";
-          q += "    FILTER(lang(?label) = 'en' AND\n";  // take only english labels
+          q += "    FILTER(lang(?label)='en' AND\n";  // take only english labels
       }
       q += "    NOT EXISTS {?page dbpedia-owl:wikiPageRedirects ?real_page})\n"; // filter out alternative spellings.
       return q
