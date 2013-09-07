@@ -17,11 +17,29 @@
           // ajaxSetup.progress = onUpdateProgress
           ajaxSetup.progress = options.track_loading
         }
-
+        exports.putLoader();
         var lastAjax = $.ajax(ajaxSetup);
         if (options.track_loading){ // i.e. if the call is for content, not for count
           exports.currentAjax = lastAjax;
         }
+        return lastAjax;
     }
     exports.send_query = send_query;
-})(typeof exports === 'undefined' : this['dbpediaTransport'] = {} : exports}
+    exports.putLoader = function(){
+        if (typeof dbpLayer.loaderGif === 'undefined'){
+            var gif = $('<img>');
+            gif.attr('src', './javascripts/dbp/dbpedia_anim.gif').
+              css({'position':'absolute',
+                   'width':64,
+                   'top':'15px',
+                   'left': '48%'});
+            dbpLayer.loaderGif = gif;
+            dbpLayer.jMap.append(gif);
+        } else {
+            dbpLayer.loaderGif.show();
+        }
+    }
+    exports.removeLoader = function(){
+        dbpLayer.loaderGif.hide();
+    }
+})(typeof exports === 'undefined' ? this['dbpLayer']['transport'] = {} : exports)

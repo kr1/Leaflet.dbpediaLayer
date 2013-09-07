@@ -106,4 +106,4 @@
       $('#query_monitor').html("<pre><code>" + q + "</code></pre><br/><a href=" + url.replace("sparql", "snorql") + ">run query</a>");
     }
 
-})(typeof exports === 'undefined' ? this['queries'] = {} : exports)
+})(typeof exports === 'undefined' ? this['dbpLayer']['queries'] = {} : exports)

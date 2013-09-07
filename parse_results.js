@@ -4,7 +4,7 @@
         handle_count_query(res);
         return;
       }
-      queries.stop_loading_animation();
+      //queries.stop_loading_animation();
       var list = res.results.bindings
       return list
       console.log(list.length)
@@ -48,7 +48,7 @@
     }
     function abort_current_ajax_content_call(){
         stop_loading_animation();
-        queries.currentAjax.abort();
-        queries.currentAjax = null
+        dbpLayer.queries.currentAjax.abort();
+        dbpLayer.queries.currentAjax = null
     }
 })(typeof exports === 'undefined' ? this['dbpParser'] = {} : exports)
