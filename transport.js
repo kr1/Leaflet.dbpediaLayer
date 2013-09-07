@@ -3,19 +3,26 @@
         // options:
         // - track_loading -> function, to visualize query progress
         // - errorCallback -> function
+        // - completeCallback -> function
         options = options || {};
-        set_progress_value(2, "request sent...");
+        //set_progress_value(2, "request sent...");
         var ajaxSetup = {
           dataType: "json",
           url: url,
           success: successCallback,
         }
+        if (options.completeCallback){
+            ajaxSetup.complete = function(){
+                exports.removeLoader();
+                options.completeCallback();
+            }
+        }
         if (options.errorCallback){
-            ajaxSetup.error = options.errorCallback
+            ajaxSetup.error = options.errorCallback;
         }
         if (options.track_loading){
           // ajaxSetup.progress = onUpdateProgress
-          ajaxSetup.progress = options.track_loading
+          ajaxSetup.progress = options.track_loading;
         }
         exports.putLoader();
         var lastAjax = $.ajax(ajaxSetup);
