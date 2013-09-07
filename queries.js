@@ -47,7 +47,7 @@
         if (!options.type_url){
             q += "      AND LANG(?type)='" + lang + "')"
         }
-        q += "  } Limit 100"
+        q += "  } Limit 1000"
         return q
     }
 
