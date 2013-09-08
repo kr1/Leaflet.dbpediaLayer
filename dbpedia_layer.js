@@ -25,6 +25,7 @@
 
     function handleDbpediaData(data){
         var list = dbpParser.parsePageResults(data);
+        var list = data.results.bindings;
         console.log(list);
         console.log("giro");
         addDBPediaLayer(list);
