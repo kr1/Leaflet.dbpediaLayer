@@ -1,18 +1,18 @@
 (function(exports){
-    function identify_area_to_load(current, prior_areas){
+    function identifyAreaToLoad(current, priorAreas){
         var not = [];
-        console.log("check: ", current, prior_areas)
-        for (var idx = 0 ; idx < prior_areas.length ; idx++){
-            var area = prior_areas[idx];
+        console.log("check: ", current, priorAreas)
+        for (var idx = 0 ; idx < priorAreas.length ; idx++){
+            var area = priorAreas[idx];
             console.log("overlapping?: ", current, area)
             if (overlapping(current, area)){
                 console.log("overlapping: ", current, area)
                 not.push(area)
             }
         }
-        return {'new': current, not: not}
+        return {'new': current, not: not};
     }
-    exports.identify_area_to_load = identify_area_to_load;
+    exports.identifyAreaToLoad = identifyAreaToLoad;
 
     function overlapping(areaA, areaB){
         if (offNorth(areaA, areaB) ||
