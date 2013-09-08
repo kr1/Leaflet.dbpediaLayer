@@ -30,7 +30,7 @@
         addDBPediaLayer(list);
     }
 
-    exports.initializeDBPediaLayer = function(map){
+    L.DBPediaLayer = function(map) {
         exports.map = map;
         exports.jMap = $(map.getContainer());
         exports.markerGroup = L.layerGroup();
