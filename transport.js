@@ -38,7 +38,8 @@
     exports._putLoader = function(){
         if (typeof L.DBPediaLayer.loaderGif === 'undefined'){
             var gif = $('<img>');
-            gif.attr('src', './javascripts/dbp/dbpedia_anim.gif')
+            //gif.attr('src', './javascripts/dbp/dbpedia_anim.gif')
+            gif.attr('src', "data:image/gif;base64," + b64_src)
                .css({'position':'absolute',
                      'width':64,
                      'top':'15px',
