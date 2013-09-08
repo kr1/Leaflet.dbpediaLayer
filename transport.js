@@ -19,7 +19,7 @@
         };
         if (options.completeCallback){
             ajaxSetup.complete = function(){
-                exports.removeLoader();
+                exports._removeLoader();
                 options.completeCallback();
             };
         };
@@ -29,27 +29,27 @@
         if (options.trackLoading){
             ajaxSetup.progress = options.trackLoading;
         };
-        exports.putLoader();
+        exports._putLoader();
         lastAjax = $.ajax(ajaxSetup);
         exports.currentAjax = lastAjax;
         return lastAjax;
     }
-    exports.sendQuery = sendQuery;
-    exports.putLoader = function(){
-        if (typeof dbpLayer.loaderGif === 'undefined'){
+    exports._sendQuery = sendQuery;
+    exports._putLoader = function(){
+        if (typeof L.DBPediaLayer.loaderGif === 'undefined'){
             var gif = $('<img>');
             gif.attr('src', './javascripts/dbp/dbpedia_anim.gif')
                .css({'position':'absolute',
                      'width':64,
                      'top':'15px',
                      'left': '48%'});
-            dbpLayer.loaderGif = gif;
-            dbpLayer.jMap.append(gif);
+            L.DBPediaLayer.loaderGif = gif;
+            L.DBPediaLayer.jMap.append(gif);
         } else {
-            dbpLayer.loaderGif.show();
+            L.DBPediaLayer.loaderGif.show();
         }
     }
-    exports.removeLoader = function(){
-        dbpLayer.loaderGif.hide();
+    exports._removeLoader = function(){
+        L.DBPediaLayer.loaderGif.hide();
     }
-})(typeof exports === 'undefined' ? this['dbpLayer']['transport'] = {} : exports)
+})(L.DBPediaLayer.prototype.transport = {})

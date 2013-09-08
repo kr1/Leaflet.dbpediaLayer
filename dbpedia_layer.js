@@ -1,70 +1,67 @@
-(function(exports){
-    function ajaxWrapper(newArea, notHere){
-        var query = exports.queries.assembleAreaQuery(newArea.SW, newArea.NE,
-                                                           {notHere: notHere,
-                                                            language: 'en',
-                                                            includeCities: false})
-        var url = exports.queries.assembleDbpediaURL(query);
-        //console.log(url)
-        dbpLayer.transport.putLoader();
-        dbpLayer.transport.sendQuery(url, handleDbpediaData,
-                           {errorCallback:
-                             function(e){
-                                 console.log(notHere.length)
-                                 notHere.pop();
-                                 console.log(notHere.length)
-                                 //exports.map.fireEvent('moveend')
-                             },
-                           completeCallback: 
-                             function(e){
-                               console.log('removing');
-                             }
-                           })
-    }
-    exports.ajaxWrapper = ajaxWrapper;
-
-    function handleDbpediaData(data){
-        var list = data.results.bindings;
-        console.log(list);
-        console.log("giro");
-        addDBPediaLayer(list);
-    }
-
     L.DBPediaLayer = function(map) {
-        exports.map = map;
-        exports.jMap = $(map.getContainer());
-        exports.markerGroup = L.layerGroup();
-        exports.markerGroup.addTo(exports.map);
-        exports.visitedBounds = [];
+        var _this = this
+        this.map = map;
+        L.DBPediaLayer.jMap = $(map.getContainer());
+        this.markerGroup = L.layerGroup();
+        this.markerGroup.addTo(this.map);
+        this.visitedBounds = [];
+        this._ajaxWrapper = function(newArea, notHere) {
+            var query = _this.queries._assembleAreaQuery(newArea.SW, newArea.NE,
+                                                               {notHere: notHere,
+                                                                language: 'en',
+                                                                includeCities: false})
+            var url = _this.queries._assembleDbpediaURL(query);
+            //console.log(url)
+            _this.transport._putLoader();
+            _this.transport._sendQuery(url, _this._handleDbpediaData,
+                               {errorCallback:
+                                   function(e){
+                                       notHere.pop();
+                                       //exports.map.fireEvent('moveend')
+                                   },
+                               completeCallback:
+                                   function(e){
+                                       console.log('removing');
+                                   }
+                               })
+        }
+
+        this._handleDbpediaData = function(data){
+            var list = data.results.bindings;
+            //console.log(list);
+            _this._addDBPediaLayer(list);
+        }
+
         map.on('moveend', function(e){
-            if (exports.map.hasLayer(exports.markerGroup)){
-                var bounds = exports.map.getBounds(),
+            if (_this.map.hasLayer(_this.markerGroup)){
+                var bounds = _this.map.getBounds(),
                     SW = bounds._southWest,
                     NE = bounds._northEast,
-                    areaToLoad = exports.utils.identifyAreaToLoad({SW: SW, NE: NE}, exports.visitedBounds);
+                    areaToLoad = _this.utils._identifyAreaToLoad({SW: SW, NE: NE}, _this.visitedBounds);
                 //console.log("to_load: ", areaToLoad)
                 if (areaToLoad){
-                    var callId = exports.ajaxWrapper(areaToLoad.new, areaToLoad.not);
-                    console.log(callId);
+                    var callId = _this._ajaxWrapper(areaToLoad.new, areaToLoad.not);
                 }
-                exports.visitedBounds.push({SW: SW, NE: NE});
+                _this.visitedBounds.push({SW: SW, NE: NE});
             }
         });
-        return exports.markerGroup
-    }
 
-    function addDBPediaLayer(list) {
-        var markers = [],
-            idx;
-        for (idx = 0; idx < list.length ; idx++) {
-             var entry = list[idx],
-                 position =  [entry.lat.value, entry.lng.value],
-                 text = "<h3>" + entry.label.value + "</h3>";
-             console.log("pos:" + position);
-             text += "<a title='" + entry.link.value + "'href='" + entry.link.value +"'>more info</a><br/>";
-             text += "<br/>" + position + "<br/>";
-             text += "<img src='" + entry.thumbnail.value +"' style='width:200px;'/>";
-             exports.markerGroup.addLayer(L.marker(position).bindPopup(text).bindLabel(entry.label.value));
+        this._addDBPediaLayer = function(list) {
+            var markers = [],
+                idx;
+            for (idx = 0; idx < list.length ; idx++) {
+                 var entry = list[idx],
+                     position =  [entry.lat.value, entry.lng.value],
+                     text = "<h3>" + entry.label.value + "</h3>";
+                 console.log("pos:" + position);
+                 text += "<a title='" + entry.link.value + "'href='" + entry.link.value +"'>more info</a><br/>";
+                 text += "<br/>" + position + "<br/>";
+                 text += "<img src='" + entry.thumbnail.value +"' style='width:200px;'/>";
+                 this.markerGroup.addLayer(L.marker(position).bindPopup(text).bindLabel(entry.label.value));
+            }
         }
+        return this.markerGroup
     }
-})(typeof exports === 'undefined' ? this['dbpLayer'] = {} : exports)
+L.dbPediaLayer = function(map){
+    return new L.DBPediaLayer(map)
+}

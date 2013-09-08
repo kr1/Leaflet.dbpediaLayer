@@ -1,14 +1,14 @@
 (function(exports){
-    function assembleDbpediaURL(query){
+    function _assembleDbpediaURL(query){
        return "http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=" +
                    escape(query) + "&format=json";
     }
-    exports.assembleDbpediaURL = assembleDbpediaURL;
+    exports._assembleDbpediaURL = _assembleDbpediaURL;
 
-    /** assembleAreaQuery() - assembles a SPARQL query for resources in a specified area.
+    /** _assembleAreaQuery() - assembles a SPARQL query for resources in a specified area.
      *
      * @param {object} SW - SouthWest corner
-     * @param {object} NE - NorthWest corner
+     * @param {object} NE - NorthEast corner
      * both SW and NE must have the following format {lat:NN.NN, lng:NN.NN}
      *
      * @param {object} options:
@@ -22,7 +22,7 @@
      *                     - typeUrl {string} SPARQL-URL-string (e.g. <http://queries for: 'rdf:type')
      * @returns {string} q - the assembled query
      */
-    exports.assembleAreaQuery = function(positionSW, positionNE, options){
+    exports._assembleAreaQuery = function(positionSW, positionNE, options){
         options || (options = {});
         var lang = options.language || 'en',
             typeQueryHead = options.typeUrl ? "" : " (GROUP_CONCAT(?type; separator=',') as ?types) ",
@@ -58,4 +58,4 @@
         console.log(q)
         return q
     }
-})(typeof exports === 'undefined' ? this['dbpLayer']['queries'] = {} : exports)
+})(L.DBPediaLayer.prototype.queries = {})

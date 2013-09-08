@@ -1,5 +1,5 @@
 (function(exports){
-    function identifyAreaToLoad(current, priorAreas){
+    function _identifyAreaToLoad(current, priorAreas){
         var not = [];
         console.log("check: ", current, priorAreas)
         for (var idx = 0 ; idx < priorAreas.length ; idx++){
@@ -12,7 +12,7 @@
         }
         return {'new': current, not: not};
     }
-    exports.identifyAreaToLoad = identifyAreaToLoad;
+    exports._identifyAreaToLoad = _identifyAreaToLoad;
 
     function overlapping(areaA, areaB){
         if (offNorth(areaA, areaB) ||
@@ -60,4 +60,4 @@
     function westBound(area){
         return area.SW.lng;
     }
-})(typeof exports == 'undefined' ? this['dbpLayer']['utils'] = {} : exports)
+})(L.DBPediaLayer.prototype.utils = {})
