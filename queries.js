@@ -12,7 +12,7 @@
      * both SW and NE must have the following format {lat:NN.NN, lng:NN.NN}
      *
      * @param {object} options:
-     *                     - not_here: list(areas): areas to exclude in the query, format [obj, obj]:
+     *                     - notHere: list(areas): areas to exclude in the query, format [obj, obj]:
      *                                 obj must have the following format:
      *                                    {SW:{lat:NN.NN, lng:NN.NN},
      *                                     NE:{lat:NN.NN, lng: NN.NN}}
@@ -25,8 +25,8 @@
     exports.assembleAreaQuery = function(positionSW, positionNE, options){
         options || (options = {});
         var lang = options.language || 'en',
-            type_query_head = options.type_url ? "" : " (GROUP_CONCAT(?type; separator=',') as ?types) ",
-            q = "SELECT DISTINCT (str(?label) as ?label) ?lng ?lat ?link ?thumbnail " + type_query_head + " WHERE {";
+            typeQueryHead = options.typeUrl ? "" : " (GROUP_CONCAT(?type; separator=',') as ?types) ",
+            q = "SELECT DISTINCT (str(?label) as ?label) ?lng ?lat ?link ?thumbnail " + typeQueryHead + " WHERE {";
         q += "       ?res <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?lng."
         q += "       ?res <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat."
         q += "       ?res rdfs:label ?label ."

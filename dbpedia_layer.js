@@ -24,7 +24,6 @@
     exports.ajaxWrapper = ajaxWrapper;
 
     function handleDbpediaData(data){
-        var list = dbpParser.parsePageResults(data);
         var list = data.results.bindings;
         console.log(list);
         console.log("giro");
@@ -53,9 +52,11 @@
         });
         return exports.markerGroup
     }
-    function addDBPediaLayer(list){
-        var markers = [];
-        for (var idx = 0; idx < list.length ; idx++) {
+
+    function addDBPediaLayer(list) {
+        var markers = [],
+            idx;
+        for (idx = 0; idx < list.length ; idx++) {
              var entry = list[idx],
                  position =  [entry.lat.value, entry.lng.value],
                  text = "<h3>" + entry.label.value + "</h3>";
