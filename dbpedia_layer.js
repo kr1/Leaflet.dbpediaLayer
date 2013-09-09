@@ -21,7 +21,6 @@
                                    },
                                completeCallback:
                                    function(e){
-                                       console.log('removing');
                                    }
                                })
         }
@@ -53,7 +52,6 @@
                  var entry = list[idx],
                      position =  [entry.lat.value, entry.lng.value],
                      text = "<h3>" + entry.label.value + "</h3>";
-                 console.log("pos:" + position);
                  text += "<a title='" + entry.link.value + "'href='" + entry.link.value +"'>more info</a><br/>";
                  text += "<br/>" + position + "<br/>";
                  text += "<img src='" + entry.thumbnail.value +"' style='width:200px;'/>";

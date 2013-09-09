@@ -55,7 +55,6 @@
             q += "      AND LANG(?type)='" + lang + "')"
         }
         q += "  } Limit 1000"
-        console.log(q)
         return q
     }
 })(L.DBPediaLayer.prototype.queries = {})

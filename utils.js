@@ -1,12 +1,9 @@
 (function(exports){
     function _identifyAreaToLoad(current, priorAreas){
         var not = [];
-        console.log("check: ", current, priorAreas)
         for (var idx = 0 ; idx < priorAreas.length ; idx++){
             var area = priorAreas[idx];
-            console.log("overlapping?: ", current, area)
             if (overlapping(current, area)){
-                console.log("overlapping: ", current, area)
                 not.push(area)
             }
         }
