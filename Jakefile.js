@@ -13,10 +13,13 @@ To run the tests, run "jake test".
 
 var build = require('./build/build.js');
 
-desc('Check Leaflet source for errors with JSHint');
+desc('Check sources for errors with JSHint');
 task('lint', build.lint);
 
-desc('Combine and compress Leaflet source files');
+desc('Combine and compress source files');
 task('build', ['lint'], build.build);
+
+desc('run tests in spec folder');
+task('test', ['lint', 'build'], build.test);
 
 task('default', ['build']);
