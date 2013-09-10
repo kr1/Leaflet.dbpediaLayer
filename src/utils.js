@@ -3,15 +3,15 @@
         var not = [];
         for (var idx = 0 ; idx < priorAreas.length ; idx++) {
             var area = priorAreas[idx];
-            if (overlapping(current, area)) {
+            if (_overlapping(current, area)) {
                 not.push(area);
             }
         }
-        return {"new": current, not: not};
+        return {"current": current, not: not};
     }
     exports._identifyAreaToLoad = _identifyAreaToLoad;
 
-    function overlapping(areaA, areaB) {
+    function _overlapping(areaA, areaB) {
         if (offNorth(areaA, areaB) ||
             offEast(areaA, areaB) ||
             offSouth(areaA, areaB) ||
@@ -21,6 +21,7 @@
             return true;
         }
     }
+    exports._overlapping = _overlapping;
 
     function offNorth(areaA, areaB) {
         // areaB lies north of areaA

@@ -40,7 +40,7 @@ L.DBPediaLayer = function (map) {
                 areaToLoad = _this.utils._identifyAreaToLoad({SW: SW, NE: NE}, _this.visitedBounds);
             //console.log("to_load: ", areaToLoad)
             if (areaToLoad) {
-                _this._ajaxWrapper(areaToLoad.new, areaToLoad.not);
+                _this._ajaxWrapper(areaToLoad.current, areaToLoad.not);
             }
             _this.visitedBounds.push({SW: SW, NE: NE});
         }
