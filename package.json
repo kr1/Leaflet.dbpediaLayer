@@ -1,0 +1,20 @@
+{
+  "name": "leaflet.dbpedialayer",
+  "version": "0.1.0",
+  "description": "DBpediaLayer is Leaflet plugin adding a layer with POIs from DBpedia.",
+  "devDependencies": {
+    "jshint": "~2.1.4",
+    "mocha": "~1.10.0",
+    "uglify-js": "~2.3.6",
+    "jake": "~0.5.16"
+  },
+  "main": "dist/Leaflet.dbpediaLayer.js",
+  "scripts": {
+    "test": "jake test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kr1/Leaflet.DBpediaLayer.git"
+  },
+  "keywords": ["gis", "map", "DBpedia", "SPARQL"]
+}
