@@ -1,8 +1,4 @@
-window = {};
-document = {};
-L = {};
-var leaflet = require("./../node_modules/leaflet/src/Leaflet.js");
-var utils = require("./../src/utils.js");
+var utils = require("./../../src/utils.js");
 describe("the utils' overlapping detection", function () {
     it("should recognize overlapping by shifting in one direction", function () {
         var left = {SW: {lat: 0, lng: 0}, NE: {lat: 10, lng: 10}};
@@ -23,6 +19,11 @@ describe("the utils' overlapping detection", function () {
         var bigger = {SW: {lat: 0, lng: 0}, NE: {lat: 10, lng: 10}};
         var smaller = {SW: {lat: 4, lng: 4}, NE: {lat: 9, lng: 9}};
         expect(utils._overlapping(smaller, bigger)).toBe(true);
+    });
+    it("should recognize non-overlapping areas", function () {
+        var bigger = {SW: {lat: 0, lng: 0}, NE: {lat: 10, lng: 10}};
+        var smaller = {SW: {lat: 14, lng: 0}, NE: {lat: 19, lng: 19}};
+        expect(utils._overlapping(smaller, bigger)).toBe(false);
     });
 });
 
