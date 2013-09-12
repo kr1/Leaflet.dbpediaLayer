@@ -1,10 +1,18 @@
-Leaflet.DBpediaLayer
---------------------
+#Leaflet.dbpediaLayer
 
-WHAT IS IT?
------------
-A leaflet plugin adding a layer of Points of Interest by querying DBpedia for current map position.
 
-LICENSE
--------
-see LICENSE file in the project root.
+Leaflet.dbpediaLayer is a very easy to use plugin for adding a layer with POIs from Wikipedia.
+It does so by querying the SPARQL endpoint at DBpedia.
+
+##Demo
+
+Check out the [demo](http://dbpedialayer.zanstaen.org).
+
+
+##Usage examples
+
+    var lay = L.dbpediaLayer(map)
+
+##License
+
+See LICENSE file in the project root.
