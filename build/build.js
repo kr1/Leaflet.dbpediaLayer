@@ -121,9 +121,7 @@ exports.build = function (compsBase32, buildName) {
     console.log('Concatenating ' + files.length + ' files...');
 
     var copy = fs.readFileSync('src/copyright.js', 'utf8'),
-        intro = '(function (window, document, undefined) {',
-        outro = '}(window, document));',
-        newSrc = copy + intro + combineFiles(files) + outro,
+        newSrc =  combineFiles(files);
 
         pathPart = 'dist/leaflet.dbpedialayer' + (buildName ? '-' + buildName : ''),
         srcPath = pathPart + '-src.js',
