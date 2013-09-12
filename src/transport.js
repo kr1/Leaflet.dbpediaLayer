@@ -1,5 +1,5 @@
-/* global $, b64Src */
-(function (exports) {
+(function (proto) {
+    proto.transport = {};
     /**
      * sendQuery() sends an ajax call. it accepts the following params
      * @param {string} url
@@ -20,7 +20,6 @@
         };
         if (options.completeCallback) {
             ajaxSetup.complete = function () {
-                exports._removeLoader();
                 options.completeCallback();
             };
         }
@@ -30,36 +29,20 @@
         if (options.trackLoading) {
             ajaxSetup.progress = options.trackLoading;
         }
-        exports._putLoader();
-        if (typeof $ !== "undefined") {
-            lastAjax = $.ajax(ajaxSetup);
-        } else {
-            // TODO: implement in vanilla JS
-        }
-        exports.currentAjax = lastAjax;
+        var req = new XMLHttpRequest();
+        req.open("GET", ajaxSetup.url, true);
+        req.onreadystatechange = function () {
+            if (req.readyState !== 4 || req.status !== 200) {
+                return;
+            } else {
+                var data = (JSON.parse(req.responseText));
+                ajaxSetup.success(data);
+            }
+            ajaxSetup.complete();
+        };
+        req.send();
+        proto.transport.currentAjax = lastAjax;
         return lastAjax;
     }
-    exports._sendQuery = sendQuery;
-    exports._putLoader = function () {
-        if (typeof L.DBpediaLayer.loaderGif === "undefined") {
-            if (typeof $ !== "undefined") {
-                var gif = $("<img>");
-                //gif.attr("src", "./javascripts/dbp/dbpedia_anim.gif")
-                gif.attr("src", "data:image/gif;base64," + b64Src)
-                   .css({"position": "absolute",
-                         "width": 64,
-                         "top": "15px",
-                         "left": "48%"});
-                L.DBpediaLayer.loaderGif = gif;
-                L.DBpediaLayer.jMap.append(gif);
-            } else {
-                // TODO: implement in vanilla JS
-            }
-        } else {
-            L.DBpediaLayer.loaderGif.show();
-        }
-    };
-    exports._removeLoader = function () {
-        L.DBpediaLayer.loaderGif.hide();
-    };
-})(L.DBpediaLayer.prototype.transport = {});
+    proto.transport._sendQuery = sendQuery;
+})(L.DBpediaLayer.prototype);

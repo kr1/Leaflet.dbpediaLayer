@@ -1,9 +1,8 @@
-/* global L, $ */
+/* global L, b64Src */
 
 L.DBpediaLayer = function (map) {
     var _this = this;
     this.map = map;
-    L.DBpediaLayer.jMap = $(map.getContainer());
     this.markerGroup = L.layerGroup();
     this.markerGroup.addTo(this.map);
     this.visitedBounds = [];
@@ -14,7 +13,7 @@ L.DBpediaLayer = function (map) {
                                                             includeCities: false});
         var url = _this.queries._assembleDbpediaURL(query);
         //console.log(url)
-        _this.transport._putLoader();
+        _this._putLoader();
         _this.transport._sendQuery(url, _this._handleDbpediaData,
                             {errorCallback:
                                 function () {
@@ -22,7 +21,9 @@ L.DBpediaLayer = function (map) {
                                     //exports.map.fireEvent("moveend")
                                 },
                              completeCallback:
-                                 function () {}
+                                 function () {
+                                        _this._removeLoader();
+                                    }
                             });
     };
 
@@ -59,6 +60,26 @@ L.DBpediaLayer = function (map) {
         }
     };
     this.markerGroup.dbp = this;
+    this._putLoader = function () {
+        if (typeof _this.loaderGif === "undefined") {
+            var gif = document.createElement("img");
+            gif.src = "data:image/gif;base64," + b64Src;
+            gif.id = "dbpedialayer.loaderGif";
+            gif.style.position = "absolute";
+            gif.style.width = "64px";
+            gif.style.top = "14px";
+            gif.style.left =  "48%";
+            _this.loaderGif = gif;
+            var parentElement = map.getContainer();
+            parentElement.appendChild(gif);
+            //L.DBpediaLayer.jMap.append(gif);
+        } else {
+            _this.loaderGif.style.display = "block";
+        }
+    };
+    this._removeLoader = function () {
+        _this.loaderGif.style.display = "none";
+    };
     return this.markerGroup;
 };
 
