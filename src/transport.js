@@ -41,7 +41,7 @@
     }
     exports._sendQuery = sendQuery;
     exports._putLoader = function () {
-        if (typeof L.DBPediaLayer.loaderGif === "undefined") {
+        if (typeof L.DBpediaLayer.loaderGif === "undefined") {
             if (typeof $ !== "undefined") {
                 var gif = $("<img>");
                 //gif.attr("src", "./javascripts/dbp/dbpedia_anim.gif")
@@ -50,16 +50,16 @@
                          "width": 64,
                          "top": "15px",
                          "left": "48%"});
-                L.DBPediaLayer.loaderGif = gif;
-                L.DBPediaLayer.jMap.append(gif);
+                L.DBpediaLayer.loaderGif = gif;
+                L.DBpediaLayer.jMap.append(gif);
             } else {
                 // TODO: implement in vanilla JS
             }
         } else {
-            L.DBPediaLayer.loaderGif.show();
+            L.DBpediaLayer.loaderGif.show();
         }
     };
     exports._removeLoader = function () {
-        L.DBPediaLayer.loaderGif.hide();
+        L.DBpediaLayer.loaderGif.hide();
     };
-})(L.DBPediaLayer.prototype.transport = {});
+})(L.DBpediaLayer.prototype.transport = {});

@@ -58,4 +58,4 @@
         q += "  } Limit 1000";
         return q;
     };
-})(L.DBPediaLayer.prototype.queries = {});
+})(L.DBpediaLayer.prototype.queries = {});

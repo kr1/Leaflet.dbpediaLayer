@@ -58,4 +58,4 @@
     function westBound(area) {
         return area.SW.lng;
     }
-})(typeof exports === "undefined" ?  L.DBPediaLayer.prototype.utils = {} : exports);
+})(typeof exports === "undefined" ?  L.DBpediaLayer.prototype.utils = {} : exports);

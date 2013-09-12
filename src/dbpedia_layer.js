@@ -1,9 +1,9 @@
 /* global L, $ */
 
-L.DBPediaLayer = function (map) {
+L.DBpediaLayer = function (map) {
     var _this = this;
     this.map = map;
-    L.DBPediaLayer.jMap = $(map.getContainer());
+    L.DBpediaLayer.jMap = $(map.getContainer());
     this.markerGroup = L.layerGroup();
     this.markerGroup.addTo(this.map);
     this.visitedBounds = [];
@@ -29,7 +29,7 @@ L.DBPediaLayer = function (map) {
     this._handleDbpediaData = function (data) {
         var list = data.results.bindings;
         //console.log(list);
-        _this._addDBPediaLayer(list);
+        _this._addDBpediaLayer(list);
     };
 
     map.on("moveend", function () {
@@ -46,7 +46,7 @@ L.DBPediaLayer = function (map) {
         }
     });
 
-    this._addDBPediaLayer = function (list) {
+    this._addDBpediaLayer = function (list) {
         var idx;
         for (idx = 0; idx < list.length ; idx++) {
             var entry = list[idx],
@@ -58,9 +58,10 @@ L.DBPediaLayer = function (map) {
             this.markerGroup.addLayer(L.marker(position).bindPopup(text).bindLabel(entry.label.value));
         }
     };
+    this.markerGroup.dbp = this;
     return this.markerGroup;
 };
 
 L.dbPediaLayer = function (map) {
-    return new L.DBPediaLayer(map);
+    return new L.DBpediaLayer(map);
 };

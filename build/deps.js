@@ -1,6 +1,6 @@
 
 var deps = {
-    DBPediaLayer: {
+    DBpediaLayer: {
         src: ['dbpedia_layer.js'],
         desc: 'the main file',
         heading: 'Main'

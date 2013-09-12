@@ -1,13 +1,9 @@
- /*
-  Leaflet.dbpLayer a Leaflet plugin adding a markerGroup layer with dynamically loaded points of interest from DBpedia.
-  (c) 2013, Christian Wörner
- */
-(function (window, document, undefined) {/* global L, $ */
+/* global L, $ */
 
-L.DBPediaLayer = function (map) {
+L.DBpediaLayer = function (map) {
     var _this = this;
     this.map = map;
-    L.DBPediaLayer.jMap = $(map.getContainer());
+    L.DBpediaLayer.jMap = $(map.getContainer());
     this.markerGroup = L.layerGroup();
     this.markerGroup.addTo(this.map);
     this.visitedBounds = [];
@@ -33,7 +29,7 @@ L.DBPediaLayer = function (map) {
     this._handleDbpediaData = function (data) {
         var list = data.results.bindings;
         //console.log(list);
-        _this._addDBPediaLayer(list);
+        _this._addDBpediaLayer(list);
     };
 
     map.on("moveend", function () {
@@ -50,7 +46,7 @@ L.DBPediaLayer = function (map) {
         }
     });
 
-    this._addDBPediaLayer = function (list) {
+    this._addDBpediaLayer = function (list) {
         var idx;
         for (idx = 0; idx < list.length ; idx++) {
             var entry = list[idx],
@@ -62,11 +58,12 @@ L.DBPediaLayer = function (map) {
             this.markerGroup.addLayer(L.marker(position).bindPopup(text).bindLabel(entry.label.value));
         }
     };
+    this.markerGroup.dbp = this;
     return this.markerGroup;
 };
 
 L.dbPediaLayer = function (map) {
-    return new L.DBPediaLayer(map);
+    return new L.DBpediaLayer(map);
 };
 
 
@@ -130,7 +127,7 @@ L.dbPediaLayer = function (map) {
         q += "  } Limit 1000";
         return q;
     };
-})(L.DBPediaLayer.prototype.queries = {});
+})(L.DBpediaLayer.prototype.queries = {});
 
 
 (function (exports) {
@@ -193,7 +190,7 @@ L.dbPediaLayer = function (map) {
     function westBound(area) {
         return area.SW.lng;
     }
-})(typeof exports === "undefined" ?  L.DBPediaLayer.prototype.utils = {} : exports);
+})(typeof exports === "undefined" ?  L.DBpediaLayer.prototype.utils = {} : exports);
 
 
 /* jshint unused: false, maxlen: false */
@@ -243,7 +240,7 @@ var b64Src = "R0lGODlhkQCRAOf/AAAwSwAySAgwRwkxSAAzTwA0SQoySAA1SgA1SwA2TAwzSQE3TQ
     }
     exports._sendQuery = sendQuery;
     exports._putLoader = function () {
-        if (typeof L.DBPediaLayer.loaderGif === "undefined") {
+        if (typeof L.DBpediaLayer.loaderGif === "undefined") {
             if (typeof $ !== "undefined") {
                 var gif = $("<img>");
                 //gif.attr("src", "./javascripts/dbp/dbpedia_anim.gif")
@@ -252,19 +249,18 @@ var b64Src = "R0lGODlhkQCRAOf/AAAwSwAySAgwRwkxSAAzTwA0SQoySAA1SgA1SwA2TAwzSQE3TQ
                          "width": 64,
                          "top": "15px",
                          "left": "48%"});
-                L.DBPediaLayer.loaderGif = gif;
-                L.DBPediaLayer.jMap.append(gif);
+                L.DBpediaLayer.loaderGif = gif;
+                L.DBpediaLayer.jMap.append(gif);
             } else {
                 // TODO: implement in vanilla JS
             }
         } else {
-            L.DBPediaLayer.loaderGif.show();
+            L.DBpediaLayer.loaderGif.show();
         }
     };
     exports._removeLoader = function () {
-        L.DBPediaLayer.loaderGif.hide();
+        L.DBpediaLayer.loaderGif.hide();
     };
-})(L.DBPediaLayer.prototype.transport = {});
+})(L.DBpediaLayer.prototype.transport = {});
 
 
-}(window, document));
