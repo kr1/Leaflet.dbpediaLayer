@@ -11,7 +11,7 @@ Check out the [demo](http://dbpedialayer.zanstaen.org).
 
 ##Usage examples
 
-    var lay = L.dbpediaLayer(map)
+    var lay = L.dbpediaLayer({lang: 'de', includeCities: false}).addTo(map);
 
 ##License
 
