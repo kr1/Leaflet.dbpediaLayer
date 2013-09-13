@@ -25,7 +25,7 @@ describe("the layer setup", function () {
 
     it("should attach an event to moveend", function () {
         spyOn(map, 'on').andCallThrough();
-        lay = L.dbPediaLayer(map);
+        lay = L.dbPediaLayer().addTo(map);
         expect(map.on).toHaveBeenCalled();
     });
 

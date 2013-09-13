@@ -1,5 +1,4 @@
 (function (proto) {
-    proto.transport = {};
     /**
      * sendQuery() sends an ajax call. it accepts the following params
      * @param {string} url
@@ -12,8 +11,7 @@
      */
     function sendQuery(url, successCallback, options) {
         options = options || {};
-        var lastAjax,
-            ajaxSetup = {
+        var ajaxSetup = {
             dataType: "json",
             url: url,
             success: successCallback
@@ -41,8 +39,8 @@
             ajaxSetup.complete();
         };
         req.send();
-        proto.transport.currentAjax = lastAjax;
-        return lastAjax;
+        proto.currentAjax = req;
+        return req;
     }
-    proto.transport._sendQuery = sendQuery;
-})(L.DBpediaLayer.prototype);
+    proto._sendQuery = sendQuery;
+})(typeof exports === "undefined" ?  L.DBpediaLayer.prototype.dbp.transport : exports);

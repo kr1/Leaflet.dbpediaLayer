@@ -12,6 +12,6 @@ function initializeMap(center) {
     map = L.map('Map', {
                         zoom: 11,
                         center: new L.LatLng(41.29, 13.29)}),
-    lay = L.dbPediaLayer(map);
+    lay = L.dbPediaLayer().addTo(map);
     return map
 }
