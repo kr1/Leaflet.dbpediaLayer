@@ -2,9 +2,17 @@
 
 L.DBpediaLayer = L.LayerGroup.extend({
     initialize: function (options) {
+        var prefKeys = [["displayThumbnail", true], ["displayPosition", true], ["displayTypes", true],
+                        ["displayAbstract", true], ["displayLink", true], ["includeCities", false]];
+        this.dbp.prefs = {};
+        for (var key in prefKeys) {
+            this.dbp.prefs[prefKeys[key][0]] = (
+                options[prefKeys[key][0]] === undefined ?
+                prefKeys[key][1] :
+                options[prefKeys[key][0]]);
+        }
+        this.dbp.prefs.lang = options.lang || "en";
         this._layers = {};
-        this.dbp.lang = options.lang || "en";
-        this.dbp.includeCities = !!options.includeCities;
         this.dbp.style = document.createElement("style");
         this.dbp.style.innerHTML = ".dbpPopup>img {width:188px;};";
         document.body.appendChild(this.dbp.style);
@@ -38,8 +46,8 @@ L.DBpediaLayer = L.LayerGroup.extend({
         _ajaxWrapper: function (newArea, notHere) {
             var query = this.queries._assembleAreaQuery(newArea.SW, newArea.NE,
                                                                {notHere: notHere,
-                                                                language: this.lang || "en",
-                                                                includeCities: this.includeCities});
+                                                                language: this.prefs.lang || "en",
+                                                                includeCities: this.prefs.includeCities});
             var url = this.queries._assembleDbpediaURL(query);
             var _this = this;
             this._putLoader();
@@ -70,12 +78,22 @@ L.DBpediaLayer = L.LayerGroup.extend({
                     types = this.utils._cleanupTypes(entry.types.value),
                     text = "<div class='dbpPopup'>";
                 text += "<h3 class='dbpPopupTitle'>" + entry.label.value + "</h3>";
-                text += position;
-                text += " - <a class='dbpPopupWikipediaLink' title='" + langUrl + "'href='" + entry.link.value + "'>";
-                text += "more info</a>";
-                text += "<br/>" + desc + "<br/>";
-                text += "Tags: " + types + "<br/>";
-                text += "<img class='dbpPopupThumbnail' src='" + entry.thumbnail.value + "'/>";
+                if (this.prefs.displayPosition) {
+                    text += position + " ";
+                }
+                if (this.prefs.displayLink) {
+                    text += " <a class='dbpPopupWikipediaLink' title='wikipedia' href='" + langUrl + "'>";
+                    text += "more info</a><br/>";
+                }
+                if (this.prefs.displayAbstract) {
+                    text += desc + "<br/>";
+                }
+                if (this.prefs.displayTypes) {
+                    text += "Tags: " + types + "<br/>";
+                }
+                if (this.prefs.displayThumbnail) {
+                    text += "<img class='dbpPopupThumbnail' src='" + entry.thumbnail.value + "'/>";
+                }
                 text += "</div>";
                 var _mark = L.marker(position).bindPopup(text).bindLabel(entry.label.value);
                 this.layer.addLayer(_mark);

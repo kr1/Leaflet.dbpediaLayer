@@ -5,7 +5,6 @@
         split = split.sort(function (a, b) {
             return a.length - b.length;
         });
-        console.log(split);
         return split.join(", ");
     };
     exports._langLink = function (url, lang) {

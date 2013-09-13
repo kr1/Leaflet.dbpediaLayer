@@ -19,6 +19,12 @@ Check out the [demo](http://dbpedialayer.zanstaen.org).
 | --- | --- | --- | ---  
 | lang | String | `en` | the language used in the query (NB: english has by far the most results).  
 | includeCities | Boolean | `false` | Whether resources of type PopulatedPlace are included in the results.  
+| displayThumbnail | Boolean | true | Whether to display a thumbnail in the popup.
+| displayPosition  | Boolean | true | s.o.
+| displayTypes     | Boolean | true | s.o.
+| displayAbstract  | Boolean | true | s.o.
+| displayLink      | Boolean | true | s.o.
+
 
 ###Recommendations
 DBpedia's SPARQL-endpoint serves all geo-localized resources present in Wikipedia (i.e. hundreds of thousands). Queries over a vast territory tend to be somewhat slow.  
