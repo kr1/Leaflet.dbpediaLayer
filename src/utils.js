@@ -1,4 +1,13 @@
 (function (exports) {
+    exports._cleanupTypes = function (types) {
+        types = types.replace(/,place|place,/, "");
+        var split = types.split(",");
+        split = split.sort(function (a, b) {
+            return a.length - b.length;
+        });
+        console.log(split);
+        return split.join(", ");
+    };
     exports._langLink = function (url, lang) {
         if (lang === "en") {
             return url;

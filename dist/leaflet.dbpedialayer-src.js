@@ -67,12 +67,14 @@ L.DBpediaLayer = L.LayerGroup.extend({
                     position =  [entry.lat.value, entry.lng.value],
                     langUrl = this.utils._langLink(entry.link.value, this.lang),
                     desc = this.utils._shortenAbstract(entry.abstract.value),
+                    types = this.utils._cleanupTypes(entry.types.value),
                     text = "<div class='dbpPopup'>";
                 text += "<h3 class='dbpPopupTitle'>" + entry.label.value + "</h3>";
                 text += position;
                 text += " - <a class='dbpPopupWikipediaLink' title='" + langUrl + "'href='" + entry.link.value + "'>";
                 text += "more info</a>";
                 text += "<br/>" + desc + "<br/>";
+                text += "Tags: " + types + "<br/>";
                 text += "<img class='dbpPopupThumbnail' src='" + entry.thumbnail.value + "'/>";
                 text += "</div>";
                 var _mark = L.marker(position).bindPopup(text).bindLabel(entry.label.value);
@@ -175,6 +177,15 @@ L.dbPediaLayer = function (options) {
 
 
 (function (exports) {
+    exports._cleanupTypes = function (types) {
+        types = types.replace(/,place|place,/, "");
+        var split = types.split(",");
+        split = split.sort(function (a, b) {
+            return a.length - b.length;
+        });
+        console.log(split);
+        return split.join(", ");
+    };
     exports._langLink = function (url, lang) {
         if (lang === "en") {
             return url;
