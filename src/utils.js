@@ -1,10 +1,14 @@
 (function (exports) {
     exports._langLink = function (url, lang) {
-        console.log(lang);
         if (lang === "en") {
             return url;
         }
         return url.replace("://dbp", "://" + lang);
+    };
+
+    exports._shortenAbstract = function (abs) {
+        var split = abs.split(" ");
+        return split.slice(0, 24).join(" ") + (split.length > 24 ? "..." : "");
     };
 
     function _identifyAreaToLoad(current, priorAreas) {
