@@ -3,10 +3,11 @@
 L.DBpediaLayer = L.LayerGroup.extend({
     initialize: function (options) {
         this._layers = {};
-        console.log(options);
-        this.dbp.lang = options.lang;
+        this.dbp.lang = options.lang || "en";
         this.dbp.includeCities = !!options.includeCities;
-
+        this.dbp.style = document.createElement("style");
+        this.dbp.style.innerHTML = ".dbpPopup>img {width:188px;};";
+        document.body.appendChild(this.dbp.style);
     },
     onAdd: function (map) {
         this.dbp.map = map;
@@ -65,12 +66,15 @@ L.DBpediaLayer = L.LayerGroup.extend({
                 var entry = list[idx],
                     position =  [entry.lat.value, entry.lng.value],
                     langUrl = this.utils._langLink(entry.link.value, this.lang),
-                    text = "<h3>" + entry.label.value + "</h3>";
-                text += "<br/>" + position;
-                text += " - <a class='wikipediaLink' title='" + langUrl + "'href='" + entry.link.value + "'>";
+                    desc = this.utils._shortenAbstract(entry.abstract.value),
+                    text = "<div class='dbpPopup'>";
+                text += "<h3 class='dbpPopupTitle'>" + entry.label.value + "</h3>";
+                text += position;
+                text += " - <a class='dbpPopupWikipediaLink' title='" + langUrl + "'href='" + entry.link.value + "'>";
                 text += "more info</a>";
-                text += "<br/>" + entry.abstract.value + "<br/>";
-                text += "<img src='" + entry.thumbnail.value + "' style='width:200px;'/>";
+                text += "<br/>" + desc + "<br/>";
+                text += "<img class='dbpPopupThumbnail' src='" + entry.thumbnail.value + "'/>";
+                text += "</div>";
                 var _mark = L.marker(position).bindPopup(text).bindLabel(entry.label.value);
                 this.layer.addLayer(_mark);
             }
@@ -131,8 +135,7 @@ L.dbPediaLayer = function (options) {
      */
     exports._assembleAreaQuery = function (positionSW, positionNE, options) {
         options = options || {};
-        console.log(options);
-        var lang = options.language || "en",
+        var lang = options.language,
             typeQueryHead = options.typeUrl ? "" : " (GROUP_CONCAT(?type; separator=',') as ?types) ",
             q = "SELECT DISTINCT (str(?label) as ?label) ?lng ?lat ?abstract ?link ?thumbnail ";
         q += typeQueryHead + " WHERE {";
@@ -173,11 +176,15 @@ L.dbPediaLayer = function (options) {
 
 (function (exports) {
     exports._langLink = function (url, lang) {
-        console.log(lang);
         if (lang === "en") {
             return url;
         }
         return url.replace("://dbp", "://" + lang);
+    };
+
+    exports._shortenAbstract = function (abs) {
+        var split = abs.split(" ");
+        return split.slice(0, 24).join(" ") + (split.length > 24 ? "..." : "");
     };
 
     function _identifyAreaToLoad(current, priorAreas) {

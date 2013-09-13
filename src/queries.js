@@ -26,7 +26,6 @@
      */
     exports._assembleAreaQuery = function (positionSW, positionNE, options) {
         options = options || {};
-        console.log(options);
         var lang = options.language,
             typeQueryHead = options.typeUrl ? "" : " (GROUP_CONCAT(?type; separator=',') as ?types) ",
             q = "SELECT DISTINCT (str(?label) as ?label) ?lng ?lat ?abstract ?link ?thumbnail ";

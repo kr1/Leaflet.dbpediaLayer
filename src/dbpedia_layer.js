@@ -3,10 +3,11 @@
 L.DBpediaLayer = L.LayerGroup.extend({
     initialize: function (options) {
         this._layers = {};
-        console.log(options);
         this.dbp.lang = options.lang || "en";
         this.dbp.includeCities = !!options.includeCities;
-
+        this.dbp.style = document.createElement("style");
+        this.dbp.style.innerHTML = ".dbpPopup>img {width:188px;};";
+        document.body.appendChild(this.dbp.style);
     },
     onAdd: function (map) {
         this.dbp.map = map;
@@ -65,12 +66,15 @@ L.DBpediaLayer = L.LayerGroup.extend({
                 var entry = list[idx],
                     position =  [entry.lat.value, entry.lng.value],
                     langUrl = this.utils._langLink(entry.link.value, this.lang),
-                    text = "<h3>" + entry.label.value + "</h3>";
-                text += "<br/>" + position;
-                text += " - <a class='wikipediaLink' title='" + langUrl + "'href='" + entry.link.value + "'>";
+                    desc = this.utils._shortenAbstract(entry.abstract.value),
+                    text = "<div class='dbpPopup'>";
+                text += "<h3 class='dbpPopupTitle'>" + entry.label.value + "</h3>";
+                text += position;
+                text += " - <a class='dbpPopupWikipediaLink' title='" + langUrl + "'href='" + entry.link.value + "'>";
                 text += "more info</a>";
-                text += "<br/>" + entry.abstract.value + "<br/>";
-                text += "<img src='" + entry.thumbnail.value + "' style='width:200px;'/>";
+                text += "<br/>" + desc + "<br/>";
+                text += "<img class='dbpPopupThumbnail' src='" + entry.thumbnail.value + "'/>";
+                text += "</div>";
                 var _mark = L.marker(position).bindPopup(text).bindLabel(entry.label.value);
                 this.layer.addLayer(_mark);
             }
