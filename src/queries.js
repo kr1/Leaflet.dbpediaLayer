@@ -26,14 +26,17 @@
      */
     exports._assembleAreaQuery = function (positionSW, positionNE, options) {
         options = options || {};
-        var lang = options.language || "en",
+        console.log(options);
+        var lang = options.language,
             typeQueryHead = options.typeUrl ? "" : " (GROUP_CONCAT(?type; separator=',') as ?types) ",
-            q = "SELECT DISTINCT (str(?label) as ?label) ?lng ?lat ?link ?thumbnail " + typeQueryHead + " WHERE {";
+            q = "SELECT DISTINCT (str(?label) as ?label) ?lng ?lat ?abstract ?link ?thumbnail ";
+        q += typeQueryHead + " WHERE {";
         q += "       ?res <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?lng.";
         q += "       ?res <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat.";
         q += "       ?res rdfs:label ?label .";
         q += "       ?res foaf:isPrimaryTopicOf ?link.";
         q += "       ?res <http://dbpedia.org/ontology/thumbnail> ?thumbnail.";
+        q += "       ?res <http://dbpedia.org/ontology/abstract> ?abstract.";
         if (options.typeUrl) {
             q += "      ?res rdf:type " + options.typeUrl;
         } else {
@@ -52,9 +55,10 @@
                 q += "      AND ?lat > " + area.SW.lat + " AND ?lat < " + area.NE.lat + ") AND ";
             }
         }
-        q += "      LANG(?label)='" + lang + "'";
+        q += "      LANG(?label)='" + lang + "' AND";
+        q += "      LANG(?abstract)='" + lang + "'";
         if (!options.typeUrl) {
-            q += "      AND LANG(?type)='" + lang + "')";
+            q += "      AND LANG(?type)='en')";
         }
         q += "  } Limit 1000";
         return q;

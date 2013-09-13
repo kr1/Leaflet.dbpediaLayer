@@ -1,8 +1,12 @@
-/* global L, b64Src*/
+/* global L, b64Src */
 
 L.DBpediaLayer = L.LayerGroup.extend({
-    initialize: function () {
+    initialize: function (options) {
         this._layers = {};
+        console.log(options);
+        this.dbp.lang = options.lang;
+        this.dbp.includeCities = !!options.includeCities;
+
     },
     onAdd: function (map) {
         this.dbp.map = map;
@@ -10,21 +14,20 @@ L.DBpediaLayer = L.LayerGroup.extend({
         this.dbp.layer = this;
         var _this = this;
         map.on("moveend",
-
-        function () {
-            if (map.hasLayer(_this)) {
-                var bounds = map.getBounds(),
-                    SW = bounds._southWest,
-                    NE = bounds._northEast,
-                    areaToLoad = _this.dbp.utils._identifyAreaToLoad({SW: SW, NE: NE}, _this.dbp.visitedBounds);
-                //console.log("to_load: ", areaToLoad)
-                if (areaToLoad) {
-                    _this.dbp._ajaxWrapper(areaToLoad.current, areaToLoad.not);
+            function () {
+                if (map.hasLayer(_this)) {
+                    var bounds = map.getBounds(),
+                        SW = bounds._southWest,
+                        NE = bounds._northEast,
+                        areaToLoad = _this.dbp.utils._identifyAreaToLoad({SW: SW, NE: NE}, _this.dbp.visitedBounds);
+                    //console.log("to_load: ", areaToLoad)
+                    if (areaToLoad) {
+                        _this.dbp._ajaxWrapper(areaToLoad.current, areaToLoad.not);
+                    }
+                    _this.dbp.visitedBounds.push({SW: SW, NE: NE});
                 }
-                _this.dbp.visitedBounds.push({SW: SW, NE: NE});
             }
-        }
-         );
+        );
     },
     dbp: {
         utils: {},
@@ -34,8 +37,8 @@ L.DBpediaLayer = L.LayerGroup.extend({
         _ajaxWrapper: function (newArea, notHere) {
             var query = this.queries._assembleAreaQuery(newArea.SW, newArea.NE,
                                                                {notHere: notHere,
-                                                                language: "en",
-                                                                includeCities: false});
+                                                                language: this.lang || "en",
+                                                                includeCities: this.includeCities});
             var url = this.queries._assembleDbpediaURL(query);
             var _this = this;
             this._putLoader();
@@ -61,10 +64,12 @@ L.DBpediaLayer = L.LayerGroup.extend({
             for (idx = 0; idx < list.length ; idx++) {
                 var entry = list[idx],
                     position =  [entry.lat.value, entry.lng.value],
+                    langUrl = this.utils._langLink(entry.link.value, this.lang),
                     text = "<h3>" + entry.label.value + "</h3>";
-                text += "<a class='wikipediaLink' title='" + entry.link.value + "'href='" + entry.link.value + "'>";
-                text += "more info</a><br/>";
-                text += "<br/>" + position + "<br/>";
+                text += "<br/>" + position;
+                text += " - <a class='wikipediaLink' title='" + langUrl + "'href='" + entry.link.value + "'>";
+                text += "more info</a>";
+                text += "<br/>" + entry.abstract.value + "<br/>";
                 text += "<img src='" + entry.thumbnail.value + "' style='width:200px;'/>";
                 var _mark = L.marker(position).bindPopup(text).bindLabel(entry.label.value);
                 this.layer.addLayer(_mark);
@@ -93,8 +98,8 @@ L.DBpediaLayer = L.LayerGroup.extend({
     }
 });
 
-L.dbPediaLayer = function () {
-    return new L.DBpediaLayer();
+L.dbPediaLayer = function (options) {
+    return new L.DBpediaLayer(options || {});
 };
 
 
@@ -126,14 +131,17 @@ L.dbPediaLayer = function () {
      */
     exports._assembleAreaQuery = function (positionSW, positionNE, options) {
         options = options || {};
+        console.log(options);
         var lang = options.language || "en",
             typeQueryHead = options.typeUrl ? "" : " (GROUP_CONCAT(?type; separator=',') as ?types) ",
-            q = "SELECT DISTINCT (str(?label) as ?label) ?lng ?lat ?link ?thumbnail " + typeQueryHead + " WHERE {";
+            q = "SELECT DISTINCT (str(?label) as ?label) ?lng ?lat ?abstract ?link ?thumbnail ";
+        q += typeQueryHead + " WHERE {";
         q += "       ?res <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?lng.";
         q += "       ?res <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat.";
         q += "       ?res rdfs:label ?label .";
         q += "       ?res foaf:isPrimaryTopicOf ?link.";
         q += "       ?res <http://dbpedia.org/ontology/thumbnail> ?thumbnail.";
+        q += "       ?res <http://dbpedia.org/ontology/abstract> ?abstract.";
         if (options.typeUrl) {
             q += "      ?res rdf:type " + options.typeUrl;
         } else {
@@ -152,9 +160,10 @@ L.dbPediaLayer = function () {
                 q += "      AND ?lat > " + area.SW.lat + " AND ?lat < " + area.NE.lat + ") AND ";
             }
         }
-        q += "      LANG(?label)='" + lang + "'";
+        q += "      LANG(?label)='" + lang + "' AND";
+        q += "      LANG(?abstract)='" + lang + "'";
         if (!options.typeUrl) {
-            q += "      AND LANG(?type)='" + lang + "')";
+            q += "      AND LANG(?type)='en')";
         }
         q += "  } Limit 1000";
         return q;
@@ -163,6 +172,14 @@ L.dbPediaLayer = function () {
 
 
 (function (exports) {
+    exports._langLink = function (url, lang) {
+        console.log(lang);
+        if (lang === "en") {
+            return url;
+        }
+        return url.replace("://dbp", "://" + lang);
+    };
+
     function _identifyAreaToLoad(current, priorAreas) {
         var not = [];
         for (var idx = 0 ; idx < priorAreas.length ; idx++) {

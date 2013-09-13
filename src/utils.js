@@ -1,4 +1,12 @@
 (function (exports) {
+    exports._langLink = function (url, lang) {
+        console.log(lang);
+        if (lang === "en") {
+            return url;
+        }
+        return url.replace("://dbp", "://" + lang);
+    };
+
     function _identifyAreaToLoad(current, priorAreas) {
         var not = [];
         for (var idx = 0 ; idx < priorAreas.length ; idx++) {
