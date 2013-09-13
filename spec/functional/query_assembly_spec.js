@@ -5,10 +5,11 @@
  */
 
 describe("query assembly", function () {
+    beforeEach(function () {
+    })
     it("should query for the current bounds", function () {
-        reinitializeMap(map);
+        typeof map !== "undefined" ? reinitializeMap(map) : initializeMap();
         var curBounds = map.getBounds();
-        console.log(Object.keys(curBounds));
         spyOn(lay.dbp.queries, "_assembleDbpediaURL");
         map.fireEvent("moveend");
         expect(lay.dbp.queries._assembleDbpediaURL.mostRecentCall.args[0]).toMatch("lat > " + curBounds._southWest.lat);

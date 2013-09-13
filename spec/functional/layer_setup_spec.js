@@ -37,5 +37,34 @@ describe("the layer setup", function () {
         expect(lay.dbp._ajaxWrapper).toHaveBeenCalled();
         expect(lay.dbp.transport._sendQuery).toHaveBeenCalled();
     });
+
+    describe("the preferences object", function () {
+        it("should get created during initialization", function () {
+            expect(lay.dbp.prefs).toBeDefined();
+        });
+        describe("should have the published defaults:", function () {
+            beforeEach(function () {
+                reinitializeMap(map, {});
+            });
+            var prefKeys = [["displayThumbnail", true], ["displayPosition", true], ["displayTypes", true],
+                              ["displayAbstract", true], ["displayLink", true], ["includeCities", false],
+                            ['lang', "en"]];
+            for (var key in prefKeys) {
+                it(prefKeys[key][0] + ": " + prefKeys[key][1], function () {
+                    expect(lay.dbp.prefs[prefKeys[key][0]]).toBe(prefKeys[key][1]);
+                });
+            }
+        });
+        describe("should reflect initialization options", function () {
+            it("accepts lang", function () {
+                reinitializeMap(map, {lang: 'it'});
+                expect(lay.dbp.prefs.lang).toEqual("it");
+            })
+            it("accepts displayThumbnail", function () {
+                reinitializeMap(map, {displayThumbnail: false});
+                expect(lay.dbp.prefs.displayThumbnail).toEqual(false);
+            })
+        });
+    });
 });
 

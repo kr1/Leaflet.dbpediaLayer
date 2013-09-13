@@ -3,7 +3,8 @@
 L.DBpediaLayer = L.LayerGroup.extend({
     initialize: function (options) {
         var prefKeys = [["displayThumbnail", true], ["displayPosition", true], ["displayTypes", true],
-                        ["displayAbstract", true], ["displayLink", true], ["includeCities", false]];
+                        ["displayAbstract", true], ["displayLink", true], ["includeCities", false],
+                        ["lang", "en"]];
         this.dbp.prefs = {};
         for (var key in prefKeys) {
             this.dbp.prefs[prefKeys[key][0]] = (
