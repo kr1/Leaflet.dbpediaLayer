@@ -99,7 +99,7 @@ L.DBpediaLayer = L.LayerGroup.extend({
                 }
                 text += "</div>";
                 var _mark = L.marker(position, {icon: this.icon}).bindPopup(text);
-                if (this.prefs.displayMarkerLabel) {
+                if (!!L.Label && this.prefs.displayMarkerLabel) {
                     _mark = _mark.bindLabel(entry.label.value);
                 }
                 this.layer.addLayer(_mark);

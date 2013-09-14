@@ -92,7 +92,7 @@ describe("the layer setup", function () {
                         iconAnchor: [16, 35],
                         popupAnchor: [0, -28]
                     },
-                    displayMarkerLabel: false}
+                    displayMarkerLabel: true}
                 );
                 expect(function () {lay.dbp._addDBpediaLayer(exampleParsedDBpediaResponse)}).not.toThrow();
             })

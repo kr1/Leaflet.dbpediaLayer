@@ -20,16 +20,17 @@ Check out the [demo](http://dbpedialayer.zanstaen.org).
 | lang | String | `en` | the language used in the query (NB: english has by far the most results).  
 | includeCities | Boolean | `false` | Whether resources of type PopulatedPlace are included in the results.  
 | displayThumbnail | Boolean | `true` | Whether to display a thumbnail in the popup.
-| displayPosition  | Boolean | `true` | s.o.
-| displayTypes     | Boolean | `true` | s.o.
-| displayAbstract  | Boolean | `true` | s.o.
-| displayLink      | Boolean | `true` | s.o.
-| loaderGif      | String | <see src> | URL of the loader displayed during DBpedia-queries. The default is an internal base64 encoded gif.
-| icon      | Object | <see src> | specify a custom icon, takes same attributes as `Leaflet.Icon`
+| displayPosition  | Boolean | `true` | see above
+| displayTypes     | Boolean | `true` | see above
+| displayAbstract  | Boolean | `true` | see above
+| displayLink      | Boolean | `true` | see above
+| displayMarkerLabel  | Boolean | `true` | Whether to display marker labels (needs Leaflet.Label plugin).
+| loaderGif      | String | see src | URL of the loader displayed during DBpedia-queries. The default is an internal base64 encoded gif.
+| icon      | Object | see src | specify a custom icon, takes same attributes as `Leaflet.Icon`
 
 
 ###Recommendations
-DBpedia's SPARQL-endpoint serves all geo-localized resources present in Wikipedia (i.e. hundreds of thousands). Queries over a vast territory tend to be somewhat slow.  
+DBpedia's SPARQL-endpoint serves all geo-localized resources present in Wikipedia (currently ~300.000). Queries over a vast territory tend to be somewhat slow.  
 In order to assure good usability and snappy results we recommend setting a `minZoom` restriction (8 - 10, depending on the area).
 
 ##License
