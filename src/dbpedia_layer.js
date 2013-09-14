@@ -1,10 +1,10 @@
-/* global L, b64Src */
+/* global L, iconB64Src, loaderB64Src */
 
 L.DBpediaLayer = L.LayerGroup.extend({
     initialize: function (options) {
         var prefKeys = [["displayThumbnail", true], ["displayPosition", true], ["displayTypes", true],
                         ["displayAbstract", true], ["displayLink", true], ["includeCities", false],
-                        ["lang", "en"]];
+                        ["displayMarkerLabel", true], ["lang", "en"]];
         this.dbp.prefs = {};
         for (var key in prefKeys) {
             this.dbp.prefs[prefKeys[key][0]] = (
@@ -12,7 +12,9 @@ L.DBpediaLayer = L.LayerGroup.extend({
                 prefKeys[key][1] :
                 options[prefKeys[key][0]]);
         }
-        this.dbp.prefs.lang = options.lang || "en";
+        this.dbp.prefs.loaderGif = options.loaderGif || null;
+        this.dbp.prefs.icon = options.icon || null;
+        this.dbp.icon = this.dbp._makeIcon();
         this._layers = {};
         this.dbp.style = document.createElement("style");
         this.dbp.style.innerHTML = ".dbpPopup>img {width:188px;};";
@@ -96,14 +98,17 @@ L.DBpediaLayer = L.LayerGroup.extend({
                     text += "<img class='dbpPopupThumbnail' src='" + entry.thumbnail.value + "'/>";
                 }
                 text += "</div>";
-                var _mark = L.marker(position).bindPopup(text).bindLabel(entry.label.value);
+                var _mark = L.marker(position, {icon: this.icon}).bindPopup(text);
+                if (this.prefs.displayMarkerLabel) {
+                    _mark = _mark.bindLabel(entry.label.value);
+                }
                 this.layer.addLayer(_mark);
             }
         },
         _putLoader: function () {
             if (typeof this.loaderGif === "undefined") {
                 var gif = document.createElement("img");
-                gif.src = "data:image/gif;base64," + b64Src;
+                gif.src = this.prefs.loaderGif || "data:image/gif;base64," + loaderB64Src;
                 gif.id = "dbpedialayer.loaderGif";
                 gif.style.position = "absolute";
                 gif.style.width = "64px";
@@ -119,7 +124,16 @@ L.DBpediaLayer = L.LayerGroup.extend({
         },
         _removeLoader: function () {
             this.loaderGif.style.display = "none";
+        },
+        _makeIcon: function () {
+            return L.icon({
+                iconUrl: (this.prefs.icon && this.prefs.icon.iconUrl) || "data:image/png;base64," + iconB64Src,
+                iconSize: (this.prefs.icon && this.prefs.icon.iconSize) || [20, 33],
+                iconAnchor: (this.prefs.icon && this.prefs.icon.iconAnchor) || [16, 35],
+                popupAnchor: (this.prefs.icon && this.prefs.icon.popupAnchor) || [-6, -25]
+            });
         }
+
     }
 });
 

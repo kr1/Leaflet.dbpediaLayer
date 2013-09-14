@@ -19,11 +19,13 @@ Check out the [demo](http://dbpedialayer.zanstaen.org).
 | --- | --- | --- | ---  
 | lang | String | `en` | the language used in the query (NB: english has by far the most results).  
 | includeCities | Boolean | `false` | Whether resources of type PopulatedPlace are included in the results.  
-| displayThumbnail | Boolean | true | Whether to display a thumbnail in the popup.
-| displayPosition  | Boolean | true | s.o.
-| displayTypes     | Boolean | true | s.o.
-| displayAbstract  | Boolean | true | s.o.
-| displayLink      | Boolean | true | s.o.
+| displayThumbnail | Boolean | `true` | Whether to display a thumbnail in the popup.
+| displayPosition  | Boolean | `true` | s.o.
+| displayTypes     | Boolean | `true` | s.o.
+| displayAbstract  | Boolean | `true` | s.o.
+| displayLink      | Boolean | `true` | s.o.
+| loaderGif      | String | <see src> | URL of the loader displayed during DBpedia-queries. The default is an internal base64 encoded gif.
+| icon      | Object | <see src> | specify a custom icon, takes same attributes as `Leaflet.Icon`
 
 
 ###Recommendations

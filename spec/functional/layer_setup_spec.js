@@ -4,6 +4,7 @@
  * - the plugin adds functionality for transport and queries.
  * - the plugin attaches a callback to moveend-event.
  * - the plugin should query DBpedia on moveend-event.
+ * - the plugin correctly handles preferences assembly.
  */
 
 describe("the layer setup", function () {
@@ -38,7 +39,7 @@ describe("the layer setup", function () {
         expect(lay.dbp.transport._sendQuery).toHaveBeenCalled();
     });
 
-    describe("the preferences object", function () {
+    describe("assembles the preferences object, which", function () {
         it("should get created during initialization", function () {
             expect(lay.dbp.prefs).toBeDefined();
         });
@@ -48,7 +49,7 @@ describe("the layer setup", function () {
             });
             var prefKeys = [["displayThumbnail", true], ["displayPosition", true], ["displayTypes", true],
                               ["displayAbstract", true], ["displayLink", true], ["includeCities", false],
-                            ['lang', "en"]];
+                              ["displayMarkerLabel", true], ['lang', "en"]];
             for (var key in prefKeys) {
                 it(prefKeys[key][0] + ": " + prefKeys[key][1], function () {
                     expect(lay.dbp.prefs[prefKeys[key][0]]).toBe(prefKeys[key][1]);
@@ -56,13 +57,44 @@ describe("the layer setup", function () {
             }
         });
         describe("should reflect initialization options", function () {
-            it("accepts lang", function () {
+            it("e.g. should accept lang", function () {
                 reinitializeMap(map, {lang: 'it'});
                 expect(lay.dbp.prefs.lang).toEqual("it");
             })
-            it("accepts displayThumbnail", function () {
+            it("and should accept displayThumbnail", function () {
                 reinitializeMap(map, {displayThumbnail: false});
                 expect(lay.dbp.prefs.displayThumbnail).toEqual(false);
+            })
+            it("and should understand loaderGif", function () {
+                expect(lay.dbp.prefs.loaderGif).toEqual(null);
+                lay.dbp.loaderGif = undefined;
+                reinitializeMap(map, {loaderGif: "http://ex/static/loader.gif"});
+                expect(lay.dbp.prefs.loaderGif).toEqual("http://ex/static/loader.gif");
+                lay.dbp._putLoader();
+                expect(lay.dbp.loaderGif.src).toEqual("http://ex/static/loader.gif");
+            })
+            it("and should understand icon", function () {
+                expect(lay.dbp.prefs.icon).toEqual(null);
+                reinitializeMap(map, {icon: {iconURL: "http://ex/static/loader.gif"}});
+                expect(lay.dbp.prefs.icon.iconURL).toEqual("http://ex/static/loader.gif");
+                expect(lay.dbp.icon instanceof L.Icon).toBe(true);
+            });
+            it("and should create an icon", function () {
+                expect(lay.dbp.icon instanceof L.Icon).toBe(true);
+                reinitializeMap(map, {icon: {iconUrl: "http://ex/static/loader.gif"}});
+                expect(lay.dbp.icon.options.iconUrl).toBe("http://ex/static/loader.gif");
+            });
+            it("and should accept complete icon info", function () {
+                reinitializeMap(map, {
+                    icon: {
+                        iconUrl: '/javascripts/images/face.png',
+                        iconSize: [32, 40],
+                        iconAnchor: [16, 35],
+                        popupAnchor: [0, -28]
+                    },
+                    displayMarkerLabel: false}
+                );
+                expect(function () {lay.dbp._addDBpediaLayer(exampleParsedDBpediaResponse)}).not.toThrow();
             })
         });
     });

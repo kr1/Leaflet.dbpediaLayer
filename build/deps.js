@@ -9,6 +9,7 @@ var deps = {
         src: ['queries.js',
               'utils.js',
               'dbpedia_anim_base64.js',
+              'marker_icon_base64.js',
               'transport.js'],
         desc: 'the helpers',
         heading: 'Helpers'
