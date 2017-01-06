@@ -23,7 +23,7 @@ function lintFiles(files) {
 
         for (j = 0, len2 = errors.length; j < len2; j++) {
             e = errors[j];
-            console.log(files[i] + '\tline ' + e.line + '\tcol ' + e.character + '\t ' + e.reason);
+            jake.logger.error(files[i] + '\tline ' + e.line + '\tcol ' + e.character + '\t ' + e.reason);
         }
 
         errorsFound += len2;
@@ -38,7 +38,7 @@ function getFiles(compsBase32) {
 
     if (compsBase32) {
         comps = parseInt(compsBase32, 32).toString(2).split('');
-        console.log('Managing dependencies...');
+        jake.logger.log('Managing dependencies...');
     }
 
     function addFiles(srcs) {
@@ -50,10 +50,10 @@ function getFiles(compsBase32) {
     for (var i in deps) {
         if (comps) {
             if (parseInt(comps.pop(), 2) === 1) {
-                console.log('\t* ' + i);
+                jake.logger.log('\t* ' + i);
                 addFiles(deps[i].src);
             } else {
-                console.log('\t  ' + i);
+                jake.logger.log('\t  ' + i);
             }
         } else {
             addFiles(deps[i].src);
@@ -75,15 +75,16 @@ exports.lint = function () {
 
     var files = getFiles();
 
-    console.log('Checking for JS errors...');
+    jake.logger.log('Checking for JS errors...');
+    jake.logger.log(files);
 
     var errorsFound = lintFiles(files);
 
     if (errorsFound > 0) {
-        console.log(errorsFound + ' error(s) found.\naborting!\n');
+        jake.logger.error(errorsFound + ' error(s) found.\naborting!\n');
         fail();
     } else {
-        console.log('\tCheck passed');
+        jake.logger.log('\tCheck passed');
     }
 };
 
@@ -118,7 +119,7 @@ exports.build = function (compsBase32, buildName) {
 
     var files = getFiles(compsBase32);
 
-    console.log('Concatenating ' + files.length + ' files...');
+    jake.logger.log('Concatenating ' + files.length + ' files...');
 
     var copy = fs.readFileSync('src/copyright.js', 'utf8'),
         newSrc =  combineFiles(files);
@@ -129,16 +130,16 @@ exports.build = function (compsBase32, buildName) {
         oldSrc = loadSilently(srcPath),
         srcDelta = getSizeDelta(newSrc, oldSrc);
 
-    console.log('\tUncompressed size: ' + newSrc.length + ' bytes (' + srcDelta + ')');
+    jake.logger.log('\tUncompressed size: ' + newSrc.length + ' bytes (' + srcDelta + ')');
 
     if (newSrc === oldSrc) {
-        console.log('\tNo changes');
+        jake.logger.log('\tNo changes');
     } else {
         fs.writeFileSync(srcPath, newSrc);
-        console.log('\tSaved to ' + srcPath);
+        jake.logger.log('\tSaved to ' + srcPath);
     }
 
-    console.log('Compressing...');
+    jake.logger.log('Compressing...');
 
     var path = pathPart + '.js',
         oldCompressed = loadSilently(path),
@@ -148,18 +149,18 @@ exports.build = function (compsBase32, buildName) {
         }).code,
         delta = getSizeDelta(newCompressed, oldCompressed);
 
-    console.log('\tCompressed size: ' + newCompressed.length + ' bytes (' + delta + ')');
+    jake.logger.log('\tCompressed size: ' + newCompressed.length + ' bytes (' + delta + ')');
 
     if (newCompressed === oldCompressed) {
-        console.log('\tNo changes');
+        jake.logger.log('\tNo changes');
     } else {
         fs.writeFileSync(path, newCompressed);
-        console.log('\tSaved to ' + path);
+        jake.logger.log('\tSaved to ' + path);
     }
 };
 
 function logToConsole(data) {
-    console.log(String(data));
+    jake.logger.error(String(data));
 }
 
 exports.test = function () {
