@@ -37,6 +37,8 @@ L.DBpediaLayer = L.LayerGroup.extend({
                         _this.dbp._ajaxWrapper(areaToLoad.current, areaToLoad.not);
                     }
                     _this.dbp.visitedBounds.push({SW: SW, NE: NE});
+                } else {
+                    _this.dbp.visitedBounds = [];
                 }
             }
         );
