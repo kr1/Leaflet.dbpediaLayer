@@ -2,11 +2,11 @@
 
 
 Leaflet.dbpediaLayer is a easy to use plugin for adding a layer with POIs from Wikipedia.
-It does so by querying the [SPARQL endpoint](http://dbpedia.org/sparql) at DBpedia.
+It does so by querying the [SPARQL endpoint](https://dbpedia.org/sparql) at DBpedia.
 
 ##Demo
 
-Check out the [demo](http://dbpedialayer.zanstaen.org).
+Check out the [demo](https://dbpedialayer.zanstaen.org).
 
 
 ##Usage
@@ -19,6 +19,7 @@ Check out the [demo](http://dbpedialayer.zanstaen.org).
 | --- | --- | --- | ---  
 | lang | String | `en` | the language used in the query (NB: english has by far the most results).  
 | includeCities | Boolean | `false` | Whether resources of type PopulatedPlace are included in the results.  
+| use_https  | Boolean | `true` | access DBpedia via https
 | displayThumbnail | Boolean | `true` | Whether to display a thumbnail in the popup.
 | displayPosition  | Boolean | `true` | see above
 | displayTypes     | Boolean | `true` | see above
