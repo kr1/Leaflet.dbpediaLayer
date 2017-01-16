@@ -97,7 +97,11 @@ L.DBpediaLayer = L.LayerGroup.extend({
                     text += "Tags: " + types + "<br/>";
                 }
                 if (this.prefs.displayThumbnail) {
-                    text += "<img class='dbpPopupThumbnail' src='" + entry.thumbnail.value + "'/>";
+                    var src = entry.thumbnail.value;
+                    if (this.prefs.useHttps) {
+                        src = src.replace(/^http/, "https");
+                    }
+                    text += "<img class='dbpPopupThumbnail' src='" + src + "'/>";
                 }
                 text += "</div>";
                 var _mark = L.marker(position, {icon: this.icon}).bindPopup(text);
