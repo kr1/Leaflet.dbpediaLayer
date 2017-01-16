@@ -1,3 +1,4 @@
+/*jslint latedef:false*/
 (function (exports) {
     exports._cleanupTypes = function (types) {
         types = types.replace(/,place|place,/, "");

@@ -4,7 +4,7 @@ L.DBpediaLayer = L.LayerGroup.extend({
     initialize: function (options) {
         var prefKeys = [["displayThumbnail", true], ["displayPosition", true], ["displayTypes", true],
                         ["displayAbstract", true], ["displayLink", true], ["includeCities", false],
-                        ["displayMarkerLabel", true], ["lang", "en"]];
+                        ["displayMarkerLabel", true], ["lang", "en"], ["useHttps", true]];
         this.dbp.prefs = {};
         for (var key in prefKeys) {
             this.dbp.prefs[prefKeys[key][0]] = (
@@ -53,7 +53,7 @@ L.DBpediaLayer = L.LayerGroup.extend({
                                                                {notHere: notHere,
                                                                 language: this.prefs.lang || "en",
                                                                 includeCities: this.prefs.includeCities});
-            var url = this.queries._assembleDbpediaURL(query);
+            var url = this.queries._assembleDbpediaURL(query, this.prefs);
             var _this = this;
             this._putLoader();
             this.transport._sendQuery(url, this._handleDbpediaData,
@@ -146,9 +146,12 @@ L.dbPediaLayer = function (options) {
 
 /*global escape */
 (function (exports) {
-    function _assembleDbpediaURL(query) {
-        //console.log(query);
-        return "http://dbpedia.org/sparql/?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=" +
+    function _assembleDbpediaURL(query, prefs) {
+        var protocol = "http";
+        if (prefs.useHttps) {
+            protocol = "https";
+        }
+        return protocol + "://dbpedia.org/sparql/?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=" +
                    escape(query) + "&format=json";
     }
     exports._assembleDbpediaURL = _assembleDbpediaURL;
@@ -211,6 +214,7 @@ L.dbPediaLayer = function (options) {
 })(typeof exports === "undefined" ?  L.DBpediaLayer.prototype.dbp.queries : exports);
 
 
+/*jslint latedef:false*/
 (function (exports) {
     exports._cleanupTypes = function (types) {
         types = types.replace(/,place|place,/, "");
