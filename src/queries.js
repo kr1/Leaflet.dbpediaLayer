@@ -1,8 +1,11 @@
 /*global escape */
 (function (exports) {
-    function _assembleDbpediaURL(query) {
-        //console.log(query);
-        return "http://dbpedia.org/sparql/?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=" +
+    function _assembleDbpediaURL(query, prefs) {
+        var protocol = "http";
+        if (prefs.useHttps) {
+            protocol = "https";
+        }
+        return protocol + "://dbpedia.org/sparql/?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=" +
                    escape(query) + "&format=json";
     }
     exports._assembleDbpediaURL = _assembleDbpediaURL;

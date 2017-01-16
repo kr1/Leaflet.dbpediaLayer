@@ -4,7 +4,7 @@ L.DBpediaLayer = L.LayerGroup.extend({
     initialize: function (options) {
         var prefKeys = [["displayThumbnail", true], ["displayPosition", true], ["displayTypes", true],
                         ["displayAbstract", true], ["displayLink", true], ["includeCities", false],
-                        ["displayMarkerLabel", true], ["lang", "en"]];
+                        ["displayMarkerLabel", true], ["lang", "en"], ["useHttps", true]];
         this.dbp.prefs = {};
         for (var key in prefKeys) {
             this.dbp.prefs[prefKeys[key][0]] = (
@@ -53,7 +53,7 @@ L.DBpediaLayer = L.LayerGroup.extend({
                                                                {notHere: notHere,
                                                                 language: this.prefs.lang || "en",
                                                                 includeCities: this.prefs.includeCities});
-            var url = this.queries._assembleDbpediaURL(query);
+            var url = this.queries._assembleDbpediaURL(query, this.prefs);
             var _this = this;
             this._putLoader();
             this.transport._sendQuery(url, this._handleDbpediaData,
